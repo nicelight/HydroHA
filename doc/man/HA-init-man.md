@@ -6,7 +6,7 @@ This manual describes how to build a hydroponic farm on top of Home Assistant 
 High‑level architecture
 
 The farm uses a mixture of ESPHome nodes and Modbus devices to read sensors (temperature, humidity, CO₂, pH, EC/PPM, water level) and drive actuators (pumps, valves, chillers, lights, fans). Data from these nodes flows into Home Assistant and is stored in InfluxDB with long‑term retention policies. Node‑RED runs complex automations (dosing, lighting, safe states). Grafana visualises long‑term trends. Frigate provides NVR and object detection for cameras. Optional Google Sheets integration exports selected metrics to Google Drive. Remote access is provided via dynamic DNS (DDNS) for monitoring and small adjustments.
-
+```mermaid
 flowchart TD
     subgraph Sensors
         T[Temp / RH / CO₂]
@@ -35,6 +35,7 @@ flowchart TD
     Cameras --> FRG
     HA -->|alerts| Telegram
     HA -->|export| GS
+```
 
 Key goals
 
@@ -111,7 +112,7 @@ Using the UI: go to Settings > System > Network, select the interface and swit
 Using nmcli (CLI) for advanced control
 developers.home-assistant.io
 :
-
+```
 ha > login
 nmcli con edit "Home Assistant OS default"
 nmcli> set ipv4.method manual
@@ -121,7 +122,7 @@ nmcli> set ipv4.dns "8.8.8.8 8.8.4.4"
 nmcli> save
 nmcli> quit
 reboot
-
+```
 
 For USB or Wi‑Fi interfaces, supply SSID and PSK as shown in the developer docs
 developers.home-assistant.io
@@ -196,7 +197,7 @@ Choice justification – ESPHome allows you to write declarative YAML configurat
 Installation – install the InfluxDB add‑on from the Add‑on store. Choose version 1.x or 2.x; version 2 adds tokens and buckets but is more complex. After starting the add‑on, create a database (home_assistant) and user. The HA InfluxDB integration transfers state changes to the database
 home-assistant.io
 . Add the following to configuration.yaml to enable the integration:
-
+```
 influxdb:
   api_version: 1
   host: 127.0.0.1
@@ -206,7 +207,7 @@ influxdb:
   password: your_password
   max_retries: 3
   default_measurement: state
-
+```
 
 Start HA and the integration will appear under Settings > Devices & Services
 home-assistant.io
@@ -217,7 +218,7 @@ home-assistant.io
 Retention policies & downsampling
 
 Create a retention policy (RP) for raw data, for example 52 weeks (12 months) and a second RP for aggregated data (36 months). In InfluxDB 1.x:
-
+```
 CREATE RETENTION POLICY "raw_12m" ON home_assistant DURATION 52w REPLICATION 1 DEFAULT;
 CREATE RETENTION POLICY "hydro_5m" ON home_assistant DURATION 156w REPLICATION 1;
 
@@ -226,7 +227,7 @@ CREATE CONTINUOUS QUERY cq_hydro_5m ON home_assistant
 BEGIN
   SELECT mean(*) INTO home_assistant.hydro_5m.:MEASUREMENT FROM /.*/ GROUP BY time(5m), *
 END;
-
+```
 
 This approach keeps high‑resolution data for one year and stores 5‑minute aggregates for three years
 docs.influxdata.com
