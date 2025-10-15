@@ -150,7 +150,10 @@ Start HA and the integration will appear under Settings > Devices & Services[
   END;
 
   ```
-  This approach keeps high‑resolution data for one year and stores 5‑minute aggregates for three years[docs.influxdata.com](https://docs.influxdata.com/influxdb/v1/guides/downsample_and_retain/#:~\:text=InfluxDB%20can%20handle%20hundreds%20of,retain%20data%20using%20Flux%20and). In InfluxDB 2.x, similar functionality is achieved using **tasks** (Flux) instead of continuous queries.
+  This approach keeps high‑resolution data for one year and stores 5‑minute aggregates for three years[docs.influxdata.com]
+  
+  
+  (https://docs.influxdata.com/influxdb/v1/guides/downsample_and_retain/#:~\:text=InfluxDB%20can%20handle%20hundreds%20of,retain%20data%20using%20Flux%20and). In InfluxDB 2.x, similar functionality is achieved using **tasks** (Flux) instead of continuous queries.
 - Monitor database size: frequent writes (every 30 s) can fill the disk quickly. Use a dedicated virtual disk and allocate enough space. InfluxDB runs parallel to the internal HA database and **does not replace** it[home-assistant.io](https://www.home-assistant.io/integrations/influxdb/#:~\:text=The%20,It%20does%20not%20replace%20it).
 - Authentication: by default InfluxDB has no authentication. Always create users and passwords[home-assistant.io](https://www.home-assistant.io/integrations/influxdb/#:~\:text=The%20default%20InfluxDB%20configuration%20doesn%E2%80%99t,and%20on%20the%20Entities%20tab), and enable SSL if the database is accessed over the network[home-assistant.io](https://www.home-assistant.io/integrations/influxdb/#:~\:text=api_version%20string).
 
